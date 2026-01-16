@@ -1,9 +1,11 @@
 const express = require("express");
 const app = express();
 
-const VERIFY_TOKEN = "hostel_secret_123";
+const VERIFY_TOKEN = "TEST123";
 
 app.get("/webhooks", (req, res) => {
+  console.log(req.query);
+
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
@@ -12,13 +14,10 @@ app.get("/webhooks", (req, res) => {
     return res.status(200).send(challenge);
   }
 
-  return res.sendStatus(403);
-});
-
-app.post("/webhooks", express.json(), (req, res) => {
-  console.log("Webhook received:", req.body);
-  res.sendStatus(200);
+  return res.status(403).send("Forbidden");
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Running on port", PORT));
+app.listen(PORT, () => {
+  console.log("Server running on port", PORT);
+});
